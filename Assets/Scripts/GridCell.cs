@@ -5,12 +5,15 @@ using UnityEngine;
 
 public class GridCell : MonoBehaviour
 {
-    [SerializeField] Material m_DefaultMaterial;
-    [SerializeField] Material m_HoveredMaterial;
+    [SerializeField] private Material m_DefaultMaterial;
+    [SerializeField] private Material m_HoveredMaterial;
+    [SerializeField] private Material m_OccupiedMaterial;
+    [SerializeField] private TMP_Text m_GridCellText;
 
     private MeshRenderer m_MeshRenderer;
     private Vector2Int m_GridPosition;
-    [SerializeField] private TMP_Text m_GridCellText;
+    private Unit m_OccupyingUnit;
+
 
     private void Awake()
     {
@@ -34,8 +37,22 @@ public class GridCell : MonoBehaviour
         m_GridPosition = gridPosition;
     }
 
+    public void SetOccupyingUnit(Unit unit)
+    {
+        m_OccupyingUnit = unit;
+        m_MeshRenderer.material = m_OccupiedMaterial;
+    }
+
+    public void ClearOccupyingUnit()
+    {
+        m_OccupyingUnit = null;
+        m_MeshRenderer.material = m_DefaultMaterial;
+    }
+
     public void SetHovered(InteractionHandler.CellHoveredArgs args)
     {
+        if (m_OccupyingUnit != null) return;
+
         if (args.m_HoveredGridCell == this)
         {
             m_MeshRenderer.material = m_HoveredMaterial;

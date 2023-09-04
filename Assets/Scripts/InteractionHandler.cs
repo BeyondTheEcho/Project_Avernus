@@ -71,7 +71,9 @@ public class InteractionHandler : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(c_LeftMouseButton))
                 {
-                    m_SelectedUnit?.MoveTo(gridCell.transform.position);
+                    if (m_SelectedUnit == null) return;
+
+                    StartCoroutine(OrderUnitToMove(m_SelectedUnit, gridCell));
                 }
             }
         }
@@ -79,6 +81,13 @@ public class InteractionHandler : MonoBehaviour
         {
             a_GridCellHovered?.Invoke(new CellHoveredArgs { m_HoveredGridCell = null });
         }
+    }
+
+    private IEnumerator OrderUnitToMove(Unit unit, GridCell destination)
+    {
+        yield return unit.MoveTo(destination.transform.position);
+
+        destination.SetOccupyingUnit(unit);
     }
 
     public struct UnitSelectedArgs

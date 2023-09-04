@@ -113,6 +113,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_DefaultMaterial: {fileID: 2100000, guid: 6a6ede16de9b4d84d80b33260e02fdea, type: 2}
   m_HoveredMaterial: {fileID: 2100000, guid: b8ef514b98024e24cb12d38d77a75bde, type: 2}
+  m_OccupiedMaterial: {fileID: 2100000, guid: 6bc9f16dae42f9d4ea68296cea1ebcbc, type: 2}
   m_GridCellText: {fileID: 5255001499999840391}
 --- !u!1 &8505049823221967225
 GameObject:

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,8 +32,19 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void MoveTo(Vector3 destination)
+    public Coroutine MoveTo(Vector3 destination)
     {
+        return StartCoroutine(MoveToCoroutine(destination));
+    }
+
+    private IEnumerator MoveToCoroutine(Vector3 destination)
+    {
+        if (m_NavMeshAgent.hasPath) yield break;
+
         m_NavMeshAgent.SetDestination(destination);
+
+        yield return new WaitUntil(() => Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(destination.x, destination.z)) <= 0.1f);
+
+        transform.position = destination;
     }
 }
