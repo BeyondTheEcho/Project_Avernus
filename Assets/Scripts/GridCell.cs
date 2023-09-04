@@ -9,15 +9,15 @@ public class GridCell : MonoBehaviour
     [SerializeField] private Material m_HoveredMaterial;
     [SerializeField] private Material m_OccupiedMaterial;
     [SerializeField] private TMP_Text m_GridCellText;
+    [SerializeField] private MeshRenderer m_MeshRenderer;
 
-    private MeshRenderer m_MeshRenderer;
     private Vector2Int m_GridPosition;
     private Unit m_OccupyingUnit;
 
 
     private void Awake()
     {
-        m_MeshRenderer = GetComponent<MeshRenderer>();
+
     }
 
     // Start is called before the first frame update
