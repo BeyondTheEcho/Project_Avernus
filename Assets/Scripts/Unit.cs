@@ -8,7 +8,12 @@ public class Unit : MonoBehaviour
 {
     [SerializeField] private GameObject m_SelectedIndicator;
 
+    private float m_Health = 100f;
+    public float m_AttackDamage = 5f;
+    public float m_AttackRange = 1f;
+
     private NavMeshAgent m_NavMeshAgent;
+
 
     private void Awake()
     {

@@ -14,8 +14,8 @@ public class InteractionHandler : MonoBehaviour
 
     [SerializeField] private LayerMask m_GridCellLayerMask;
     [SerializeField] private LayerMask m_UnitLayerMask;
+    [SerializeField] private LayerMask m_EnemyLayerMask;
 
-    private GridCell m_LastHoveredGridCell;
     private Unit m_SelectedUnit;
 
     private const int c_LeftMouseButton = 0;
@@ -35,6 +35,7 @@ public class InteractionHandler : MonoBehaviour
     void Update()
     {
         if(TryHandleUnitSelection()) return;
+        if(TryHandleAttackOrder()) return;
         HandleUnitMovement();
     }
 
@@ -52,6 +53,26 @@ public class InteractionHandler : MonoBehaviour
                 m_SelectedUnit = unit;
 
                 a_UnitSelected?.Invoke(new UnitSelectedArgs { m_SelectedUnit = unit });
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool TryHandleAttackOrder()
+    {
+        if (m_SelectedUnit == null) return false;
+        if (!Input.GetMouseButtonDown(c_LeftMouseButton)) return true;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, m_EnemyLayerMask))
+        {
+            if (hit.collider.gameObject.TryGetComponent(out IInteractable enemy))
+            {
+                enemy.AttackThisTarget(m_SelectedUnit);
 
                 return true;
             }
