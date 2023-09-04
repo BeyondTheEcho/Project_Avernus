@@ -1,21 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Unit : MonoBehaviour
 {
     [SerializeField] private GameObject m_SelectedIndicator;
 
-    // Start is called before the first frame update
+    private NavMeshAgent m_NavMeshAgent;
+
+    private void Awake()
+    {
+        m_NavMeshAgent = GetComponent<NavMeshAgent>();
+    }
+
     void Start()
     {
         InteractionHandler.s_Instance.a_UnitSelected += SetSelected;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     private void SetSelected(InteractionHandler.UnitSelectedArgs args)
@@ -28,5 +29,10 @@ public class Unit : MonoBehaviour
         {
             m_SelectedIndicator.SetActive(false);
         }
+    }
+
+    public void MoveTo(Vector3 destination)
+    {
+        m_NavMeshAgent.SetDestination(destination);
     }
 }

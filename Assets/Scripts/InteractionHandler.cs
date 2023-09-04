@@ -34,7 +34,7 @@ public class InteractionHandler : MonoBehaviour
     void Update()
     {
         if(TryHandleUnitSelection()) return;
-        HandleMouseHover();
+        HandleUnitMovement();
     }
 
     private bool TryHandleUnitSelection()
@@ -59,7 +59,7 @@ public class InteractionHandler : MonoBehaviour
         return false;
     }
 
-    private void HandleMouseHover()
+    private void HandleUnitMovement()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -68,6 +68,11 @@ public class InteractionHandler : MonoBehaviour
             if (hit.collider.gameObject.TryGetComponent(out GridCell gridCell))
             {
                 a_GridCellHovered?.Invoke(new CellHoveredArgs { m_HoveredGridCell = gridCell });
+
+                if (Input.GetMouseButtonDown(c_LeftMouseButton))
+                {
+                    m_SelectedUnit?.MoveTo(gridCell.transform.position);
+                }
             }
         }
         else
