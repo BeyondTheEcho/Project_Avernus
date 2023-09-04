@@ -9,7 +9,8 @@ public class InteractionHandler : MonoBehaviour
     public static InteractionHandler s_Instance;
 
     public Action<UnitSelectedArgs> a_UnitSelected;
-    public Action<CellHoveredArgs> a_GridCellHovered;
+    public Action<GridCellHoveredArgs> a_GridCellHovered;
+    public Action<GridCellOccupiedArgs> a_GridCellOccupied;
 
     [SerializeField] private LayerMask m_GridCellLayerMask;
     [SerializeField] private LayerMask m_UnitLayerMask;
@@ -43,7 +44,7 @@ public class InteractionHandler : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, m_UnitLayerMask))
         {
-            a_GridCellHovered?.Invoke(new CellHoveredArgs { m_HoveredGridCell = null });
+            a_GridCellHovered?.Invoke(new GridCellHoveredArgs { m_HoveredGridCell = null });
             if (!Input.GetMouseButtonDown(c_LeftMouseButton)) return true;
                 
             if (hit.collider.gameObject.TryGetComponent(out Unit unit))
@@ -67,7 +68,7 @@ public class InteractionHandler : MonoBehaviour
         {
             if (hit.collider.gameObject.TryGetComponent(out GridCell gridCell))
             {
-                a_GridCellHovered?.Invoke(new CellHoveredArgs { m_HoveredGridCell = gridCell });
+                a_GridCellHovered?.Invoke(new GridCellHoveredArgs { m_HoveredGridCell = gridCell });
 
                 if (Input.GetMouseButtonDown(c_LeftMouseButton))
                 {
@@ -79,7 +80,7 @@ public class InteractionHandler : MonoBehaviour
         }
         else
         {
-            a_GridCellHovered?.Invoke(new CellHoveredArgs { m_HoveredGridCell = null });
+            a_GridCellHovered?.Invoke(new GridCellHoveredArgs { m_HoveredGridCell = null });
         }
     }
 
@@ -87,7 +88,7 @@ public class InteractionHandler : MonoBehaviour
     {
         yield return unit.MoveTo(destination.transform.position);
 
-        destination.SetOccupyingUnit(unit);
+        a_GridCellOccupied?.Invoke(new GridCellOccupiedArgs { m_OccupiedGridCell = destination, m_OccupyingUnit = unit });
     }
 
     public struct UnitSelectedArgs
@@ -95,8 +96,14 @@ public class InteractionHandler : MonoBehaviour
         public Unit m_SelectedUnit;
     }
 
-    public struct CellHoveredArgs
+    public struct GridCellHoveredArgs
     {
         public GridCell m_HoveredGridCell;
+    }
+
+    public struct GridCellOccupiedArgs
+    {
+        public GridCell m_OccupiedGridCell;
+        public Unit m_OccupyingUnit;
     }
 }

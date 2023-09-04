@@ -14,16 +14,11 @@ public class GridCell : MonoBehaviour
     private Vector2Int m_GridPosition;
     private Unit m_OccupyingUnit;
 
-
-    private void Awake()
-    {
-
-    }
-
     // Start is called before the first frame update
     void Start()
     {
-        InteractionHandler.s_Instance.a_GridCellHovered += SetHovered;
+        InteractionHandler.s_Instance.a_GridCellHovered += OnHovered;
+        InteractionHandler.s_Instance.a_GridCellOccupied += OnOccupied;
     }
 
     // Update is called once per frame
@@ -49,7 +44,7 @@ public class GridCell : MonoBehaviour
         m_MeshRenderer.material = m_DefaultMaterial;
     }
 
-    public void SetHovered(InteractionHandler.CellHoveredArgs args)
+    public void OnHovered(InteractionHandler.GridCellHoveredArgs args)
     {
         if (m_OccupyingUnit != null) return;
 
@@ -60,6 +55,20 @@ public class GridCell : MonoBehaviour
         else
         {
             m_MeshRenderer.material = m_DefaultMaterial;
+        }
+    }
+
+    public void OnOccupied(InteractionHandler.GridCellOccupiedArgs args)
+    {
+        if (args.m_OccupiedGridCell == this)
+        {
+            m_MeshRenderer.material = m_OccupiedMaterial;
+            m_OccupyingUnit = args.m_OccupyingUnit;
+        }
+        else if (args.m_OccupyingUnit == m_OccupyingUnit)
+        {
+            m_MeshRenderer.material = m_DefaultMaterial;
+            m_OccupyingUnit = null;
         }
     }
 }
