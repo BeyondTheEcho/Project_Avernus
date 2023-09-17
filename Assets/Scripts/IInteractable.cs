@@ -4,6 +4,6 @@ using UnityEngine;
 
 public interface IInteractable
 {
-    abstract void InteractWithThis(Unit currentUnit);
-    abstract void AttackThisTarget(Unit currentUnit);
+    abstract void InteractWithThis(PlayerUnit currentPlayerUnit);
+    abstract void AttackThisTarget(PlayerUnit currentPlayerUnit);
 }

@@ -12,7 +12,7 @@ public class GridCell : MonoBehaviour
     [SerializeField] private MeshRenderer m_MeshRenderer;
 
     private Vector2Int m_GridPosition;
-    private Unit m_OccupyingUnit;
+    private PlayerUnit m_OccupyingPlayerUnit;
 
     // Start is called before the first frame update
     void Start()
@@ -32,21 +32,21 @@ public class GridCell : MonoBehaviour
         m_GridPosition = gridPosition;
     }
 
-    public void SetOccupyingUnit(Unit unit)
+    public void SetOccupyingUnit(PlayerUnit playerUnit)
     {
-        m_OccupyingUnit = unit;
+        m_OccupyingPlayerUnit = playerUnit;
         m_MeshRenderer.material = m_OccupiedMaterial;
     }
 
     public void ClearOccupyingUnit()
     {
-        m_OccupyingUnit = null;
+        m_OccupyingPlayerUnit = null;
         m_MeshRenderer.material = m_DefaultMaterial;
     }
 
     public void OnHovered(InteractionHandler.GridCellHoveredArgs args)
     {
-        if (m_OccupyingUnit != null) return;
+        if (m_OccupyingPlayerUnit != null) return;
 
         if (args.m_HoveredGridCell == this)
         {
@@ -63,12 +63,12 @@ public class GridCell : MonoBehaviour
         if (args.m_OccupiedGridCell == this)
         {
             m_MeshRenderer.material = m_OccupiedMaterial;
-            m_OccupyingUnit = args.m_OccupyingUnit;
+            m_OccupyingPlayerUnit = args.OccupyingPlayerUnit;
         }
-        else if (args.m_OccupyingUnit == m_OccupyingUnit)
+        else if (args.OccupyingPlayerUnit == m_OccupyingPlayerUnit)
         {
             m_MeshRenderer.material = m_DefaultMaterial;
-            m_OccupyingUnit = null;
+            m_OccupyingPlayerUnit = null;
         }
     }
 }

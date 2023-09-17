@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
-    private Queue<Unit> m_TurnQueue = new Queue<Unit>();
+    private Queue<PlayerUnit> m_TurnQueue = new Queue<PlayerUnit>();
 
     // Start is called before the first frame update
     void Start()

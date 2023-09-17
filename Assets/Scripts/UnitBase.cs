@@ -1,40 +1,32 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Unit : MonoBehaviour
+[RequireComponent(typeof(NavMeshAgent))]
+public class UnitBase : MonoBehaviour
 {
     [SerializeField] private GameObject m_SelectedIndicator;
 
     private float m_Health = 100f;
-    public float m_AttackDamage = 5f;
-    public float m_AttackRange = 1f;
+    private float m_AttackDamage = 5f;
+    private float m_AttackRange = 1f;
 
     private NavMeshAgent m_NavMeshAgent;
-
 
     private void Awake()
     {
         m_NavMeshAgent = GetComponent<NavMeshAgent>();
     }
 
-    void Start()
+    public void SetSelected()
     {
-        InteractionHandler.s_Instance.a_UnitSelected += SetSelected;
+        m_SelectedIndicator.SetActive(true);
     }
 
-    private void SetSelected(InteractionHandler.UnitSelectedArgs args)
+    public void SetDeselected()
     {
-        if (args.m_SelectedUnit == this)
-        {
-            m_SelectedIndicator.SetActive(true);
-        }
-        else
-        {
-            m_SelectedIndicator.SetActive(false);
-        }
+        m_SelectedIndicator.SetActive(false);
     }
 
     public Coroutine MoveTo(Vector3 destination)
@@ -51,5 +43,25 @@ public class Unit : MonoBehaviour
         yield return new WaitUntil(() => Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(destination.x, destination.z)) <= 0.1f);
 
         transform.position = destination;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        m_Health -= damage;
+
+        if (m_Health <= 0f)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public void StartTurn()
+    {
+        SetSelected();
+    }
+
+    public void EndTurn()
+    {
+        SetDeselected();
     }
 }

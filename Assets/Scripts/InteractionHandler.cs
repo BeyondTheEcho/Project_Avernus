@@ -16,7 +16,7 @@ public class InteractionHandler : MonoBehaviour
     [SerializeField] private LayerMask m_UnitLayerMask;
     [SerializeField] private LayerMask m_EnemyLayerMask;
 
-    private Unit m_SelectedUnit;
+    private PlayerUnit m_SelectedPlayerUnit;
 
     private const int c_LeftMouseButton = 0;
 
@@ -34,9 +34,9 @@ public class InteractionHandler : MonoBehaviour
 
     void Update()
     {
-        if(TryHandleUnitSelection()) return;
-        if(TryHandleAttackOrder()) return;
-        HandleUnitMovement();
+        //if(TryHandleUnitSelection()) return;
+        //if(TryHandleAttackOrder()) return;
+        //HandleUnitMovement();
     }
 
     private bool TryHandleUnitSelection()
@@ -48,11 +48,11 @@ public class InteractionHandler : MonoBehaviour
             a_GridCellHovered?.Invoke(new GridCellHoveredArgs { m_HoveredGridCell = null });
             if (!Input.GetMouseButtonDown(c_LeftMouseButton)) return true;
                 
-            if (hit.collider.gameObject.TryGetComponent(out Unit unit))
+            if (hit.collider.gameObject.TryGetComponent(out PlayerUnit unit))
             {
-                m_SelectedUnit = unit;
+                m_SelectedPlayerUnit = unit;
 
-                a_UnitSelected?.Invoke(new UnitSelectedArgs { m_SelectedUnit = unit });
+                a_UnitSelected?.Invoke(new UnitSelectedArgs { SelectedPlayerUnit = unit });
 
                 return true;
             }
@@ -63,7 +63,7 @@ public class InteractionHandler : MonoBehaviour
 
     private bool TryHandleAttackOrder()
     {
-        if (m_SelectedUnit == null) return false;
+        if (m_SelectedPlayerUnit == null) return false;
         if (!Input.GetMouseButtonDown(c_LeftMouseButton)) return true;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -72,7 +72,7 @@ public class InteractionHandler : MonoBehaviour
         {
             if (hit.collider.gameObject.TryGetComponent(out IInteractable enemy))
             {
-                enemy.AttackThisTarget(m_SelectedUnit);
+                enemy.AttackThisTarget(m_SelectedPlayerUnit);
 
                 return true;
             }
@@ -93,9 +93,9 @@ public class InteractionHandler : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(c_LeftMouseButton))
                 {
-                    if (m_SelectedUnit == null) return;
+                    if (m_SelectedPlayerUnit == null) return;
 
-                    StartCoroutine(OrderUnitToMove(m_SelectedUnit, gridCell));
+                    StartCoroutine(OrderUnitToMove(m_SelectedPlayerUnit, gridCell));
                 }
             }
         }
@@ -105,16 +105,16 @@ public class InteractionHandler : MonoBehaviour
         }
     }
 
-    private IEnumerator OrderUnitToMove(Unit unit, GridCell destination)
+    private IEnumerator OrderUnitToMove(PlayerUnit playerUnit, GridCell destination)
     {
-        yield return unit.MoveTo(destination.transform.position);
+        yield return playerUnit.MoveTo(destination.transform.position);
 
-        a_GridCellOccupied?.Invoke(new GridCellOccupiedArgs { m_OccupiedGridCell = destination, m_OccupyingUnit = unit });
+        a_GridCellOccupied?.Invoke(new GridCellOccupiedArgs { m_OccupiedGridCell = destination, OccupyingPlayerUnit = playerUnit });
     }
 
     public struct UnitSelectedArgs
     {
-        public Unit m_SelectedUnit;
+        public PlayerUnit SelectedPlayerUnit;
     }
 
     public struct GridCellHoveredArgs
@@ -125,6 +125,6 @@ public class InteractionHandler : MonoBehaviour
     public struct GridCellOccupiedArgs
     {
         public GridCell m_OccupiedGridCell;
-        public Unit m_OccupyingUnit;
+        public PlayerUnit OccupyingPlayerUnit;
     }
 }
