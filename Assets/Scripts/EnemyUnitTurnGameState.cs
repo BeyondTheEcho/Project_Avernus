@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitTurnGameState : IGameState
+public class EnemyUnitTurnGameState : IGameState
 {
     private readonly UnitBase m_CurrentUnit;
 
-    public UnitTurnGameState(UnitBase currentPlayerUnit)
+    public EnemyUnitTurnGameState(UnitBase currentPlayerUnit)
     {
         m_CurrentUnit = currentPlayerUnit;
 
@@ -20,11 +20,11 @@ public class UnitTurnGameState : IGameState
 
     public void OnExit()
     {
-        throw new System.NotImplementedException();
+        m_CurrentUnit.EndTurn();
     }
 
     public void OnUpdate()
     {
-        m_CurrentUnit.EndTurn();
+        //Enemy unit AI logic goes here
     }
 }

@@ -44,6 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c1a70330b7759b4d9637e76adfb0c6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_GridCellLayerMask:
-    serializedVersion: 2
-    m_Bits: 64
+  m_LayerMasks:
+    m_GridCellLayerMask:
+      serializedVersion: 2
+      m_Bits: 64
+    m_UnitLayerMask:
+      serializedVersion: 2
+      m_Bits: 128
+    m_EnemyLayerMask:
+      serializedVersion: 2
+      m_Bits: 256

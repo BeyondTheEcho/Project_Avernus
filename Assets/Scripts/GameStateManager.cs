@@ -15,12 +15,32 @@ public class GameStateManager : MonoBehaviour
 
     void Start()
     {
-        m_CurrentGameState = new UnitTurnGameState(m_AllUnits[0]);
+        CreateNewUnitState(m_AllUnits[0]);
     }
 
     void Update()
     {
-        m_CurrentGameState.OnEnter();
         m_CurrentGameState.OnUpdate();
+    }
+
+    public void EndTurn()
+    {
+        m_CurrentGameState.OnExit();
+
+        m_AllUnits.PopAppend();
+
+        CreateNewUnitState(m_AllUnits[0]);
+    }
+
+    private void CreateNewUnitState(UnitBase unit)
+    {
+        if (unit is PlayerUnit)
+        {
+            m_CurrentGameState = new PlayerUnitTurnGameState(unit);
+        }
+        else if (unit is EnemyUnit)
+        {
+            m_CurrentGameState = new EnemyUnitTurnGameState(unit);
+        }
     }
 }
