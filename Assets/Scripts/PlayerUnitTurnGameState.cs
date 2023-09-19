@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static InteractionHandler;
 
 public class PlayerUnitTurnGameState : IGameState
 {
@@ -33,21 +32,21 @@ public class PlayerUnitTurnGameState : IGameState
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, InteractionHandler.s_Instance.m_LayerMasks.m_GridCellLayerMask))
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, GridSystem.s_Instance.m_LayerMasks.m_GridCellLayerMask))
         {
             if (hit.collider.gameObject.TryGetComponent(out GridCell gridCell))
             {
-                InteractionHandler.s_Instance.a_GridCellHovered?.Invoke(new GridCellHoveredArgs { m_HoveredGridCell = gridCell });
+                GridSystem.s_Instance.a_GridCellHovered?.Invoke(new GridSystem.GridCellHoveredArgs { m_HoveredGridCell = gridCell });
 
                 if (Input.GetMouseButtonDown(MouseButtons.c_LeftMouseButton))
                 {
-                    InteractionHandler.s_Instance.MoveUnit((PlayerUnit)m_CurrentUnit, gridCell);
+                    m_CurrentUnit.MoveTo(gridCell);
                 }
             }
         }
         else
         {
-            InteractionHandler.s_Instance.a_GridCellHovered?.Invoke(new GridCellHoveredArgs { m_HoveredGridCell = null });
+            GridSystem.s_Instance.a_GridCellHovered?.Invoke(new GridSystem.GridCellHoveredArgs { m_HoveredGridCell = null });
         }
     }
 }

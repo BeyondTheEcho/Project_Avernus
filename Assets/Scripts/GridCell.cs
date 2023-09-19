@@ -17,8 +17,8 @@ public class GridCell : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        InteractionHandler.s_Instance.a_GridCellHovered += OnHovered;
-        InteractionHandler.s_Instance.a_GridCellOccupied += OnOccupied;
+        GridSystem.s_Instance.a_GridCellHovered += OnHovered;
+        GridSystem.s_Instance.a_GridCellOccupied += OnOccupied;
     }
 
     // Update is called once per frame
@@ -44,7 +44,7 @@ public class GridCell : MonoBehaviour
         m_MeshRenderer.material = m_DefaultMaterial;
     }
 
-    public void OnHovered(InteractionHandler.GridCellHoveredArgs args)
+    public void OnHovered(GridSystem.GridCellHoveredArgs args)
     {
         if (m_OccupyingPlayerUnit != null) return;
 
@@ -58,14 +58,14 @@ public class GridCell : MonoBehaviour
         }
     }
 
-    public void OnOccupied(InteractionHandler.GridCellOccupiedArgs args)
+    public void OnOccupied(GridSystem.GridCellOccupiedArgs args)
     {
         if (args.m_OccupiedGridCell == this)
         {
             m_MeshRenderer.material = m_OccupiedMaterial;
-            m_OccupyingPlayerUnit = args.OccupyingPlayerUnit;
+            m_OccupyingPlayerUnit = args.m_OccupyingPlayerUnit;
         }
-        else if (args.OccupyingPlayerUnit == m_OccupyingPlayerUnit)
+        else if (args.m_OccupyingPlayerUnit == m_OccupyingPlayerUnit)
         {
             m_MeshRenderer.material = m_DefaultMaterial;
             m_OccupyingPlayerUnit = null;

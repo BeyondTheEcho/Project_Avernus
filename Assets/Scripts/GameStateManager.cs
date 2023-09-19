@@ -15,7 +15,7 @@ public class GameStateManager : MonoBehaviour
 
     void Start()
     {
-        CreateNewUnitState(m_AllUnits[0]);
+        CreateNewUnitState(m_AllUnits.First());
     }
 
     void Update()
@@ -29,7 +29,7 @@ public class GameStateManager : MonoBehaviour
 
         m_AllUnits.PopAppend();
 
-        CreateNewUnitState(m_AllUnits[0]);
+        CreateNewUnitState(m_AllUnits.First());
     }
 
     private void CreateNewUnitState(UnitBase unit)
