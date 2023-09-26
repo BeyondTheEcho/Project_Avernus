@@ -73,6 +73,7 @@ public class UnitBase : MonoBehaviour
 
     public void StartTurn()
     {
+        CameraController.s_Instance.MoveCameraFocusTo(transform.position);
         SetSelected();
     }
 
