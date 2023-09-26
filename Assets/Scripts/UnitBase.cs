@@ -13,6 +13,8 @@ public class UnitBase : MonoBehaviour
     private float m_Health = 100f;
     private float m_AttackDamage = 5f;
     private float m_AttackRange = 1f;
+    private float m_MovementRange = 4f;
+    private float m_RemainingMovementRange = 0f;
 
     private bool m_IsMoving = false;
 
@@ -37,10 +39,16 @@ public class UnitBase : MonoBehaviour
     {
         if (m_IsMoving) return;
 
+        float destinationDistance = GridSystem.Get2DDistanceAsFloat(transform.position, destination.transform.position);
+
+        if (destinationDistance > m_RemainingMovementRange) return;
+
         StartCoroutine(MoveToCoroutine(destination.transform.position, () =>
         {
             GridSystem.s_Instance.a_GridCellOccupied?.Invoke(new GridCellOccupiedArgs { m_OccupiedGridCell = destination, m_OccupyingPlayerUnit = this as PlayerUnit });
             m_IsMoving = false;
+            m_RemainingMovementRange -= destinationDistance;
+            GridSystem.s_Instance.a_MoveAction?.Invoke(new MoveActionArgs { m_Unit = this, m_HighlightOnlyValidMoves = true });
         }));
     }
 
@@ -71,13 +79,24 @@ public class UnitBase : MonoBehaviour
         }
     }
 
-    public void StartTurn()
+    public float GetMovementRange()
     {
+        return m_MovementRange;
+    }
+
+    public float GetRemainingMovementRange()
+    {
+        return m_RemainingMovementRange;
+    }
+
+    public virtual void StartTurn()
+    {
+        m_RemainingMovementRange = m_MovementRange;
         CameraController.s_Instance.MoveCameraFocusTo(transform.position);
         SetSelected();
     }
 
-    public void EndTurn()
+    public virtual void EndTurn()
     {
         SetDeselected();
     }

@@ -16,6 +16,7 @@ public class GridSystem : MonoBehaviour
 
     public Action<GridCellHoveredArgs> a_GridCellHovered;
     public Action<GridCellOccupiedArgs> a_GridCellOccupied;
+    public Action<MoveActionArgs> a_MoveAction;
 
     private GameObject[,] m_GridCells;
 
@@ -38,15 +39,32 @@ public class GridSystem : MonoBehaviour
     {
         for (int x = 0; x < m_GridWidth; x++)
         {
-            for (int y = 0; y < m_GridHeight; y++)
+            for (int z = 0; z < m_GridHeight; z++)
             {
-                GameObject gridCell = Instantiate(m_GridCellPrefab, new Vector3(x, 0, y), Quaternion.identity);
+                GameObject gridCell = Instantiate(m_GridCellPrefab, new Vector3(x, 0, z), Quaternion.identity);
                 gridCell.transform.parent = transform;
 
-                gridCell.GetComponent<GridCell>().Initialise(new Vector2Int(x, y));
-                m_GridCells[x, y] = gridCell;
+                gridCell.GetComponent<GridCell>().Initialise(new Vector2Int(x, z));
+                m_GridCells[x, z] = gridCell;
             }
         }   
+    }
+
+    public static Vector3 Get2DDistanceAsVector(Vector3 a, Vector3 b)
+    {
+        Vector3 distance = new Vector3(Mathf.Abs(a.x - b.x), 0, Mathf.Abs(a.z - b.z));
+        return distance;
+    }
+
+    public static float Get2DDistanceAsFloat(Vector3 a, Vector3 b)
+    {
+        return Get2DDistanceAsVector(a, b).magnitude;
+    }
+
+    public struct MoveActionArgs
+    {
+        public UnitBase m_Unit;
+        public bool m_HighlightOnlyValidMoves;
     }
 
     public struct GridCellHoveredArgs

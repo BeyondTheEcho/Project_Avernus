@@ -9,13 +9,11 @@ public class EnemyUnitTurnGameState : IGameState
     public EnemyUnitTurnGameState(UnitBase currentPlayerUnit)
     {
         m_CurrentUnit = currentPlayerUnit;
-
-        OnEnter();
     }
 
     public void OnEnter()
     {
-        m_CurrentUnit.StartTurn();
+        ((EnemyUnit)m_CurrentUnit).StartTurn();
     }
 
     public void OnExit()

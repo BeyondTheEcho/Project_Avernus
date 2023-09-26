@@ -15,10 +15,11 @@ public class GridCell : MonoBehaviour
     private PlayerUnit m_OccupyingPlayerUnit;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         GridSystem.s_Instance.a_GridCellHovered += OnHovered;
         GridSystem.s_Instance.a_GridCellOccupied += OnOccupied;
+        GridSystem.s_Instance.a_MoveAction += OnMoveAction;
     }
 
     // Update is called once per frame
@@ -42,6 +43,18 @@ public class GridCell : MonoBehaviour
     {
         m_OccupyingPlayerUnit = null;
         m_MeshRenderer.material = m_DefaultMaterial;
+    }
+
+    public void OnMoveAction(GridSystem.MoveActionArgs args)
+    {
+        if (args.m_HighlightOnlyValidMoves && GridSystem.Get2DDistanceAsFloat(transform.position, args.m_Unit.transform.position) > args.m_Unit.GetRemainingMovementRange())
+        {
+            m_MeshRenderer.enabled = false;
+        }
+        else
+        {
+            m_MeshRenderer.enabled = true;
+        }
     }
 
     public void OnHovered(GridSystem.GridCellHoveredArgs args)

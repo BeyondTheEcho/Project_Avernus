@@ -25,8 +25,6 @@ public class GameStateManager : MonoBehaviour
 
     public void EndTurn()
     {
-        m_CurrentGameState.OnExit();
-
         m_AllUnits.PopAppend();
 
         CreateNewUnitState(m_AllUnits.First());
@@ -36,11 +34,20 @@ public class GameStateManager : MonoBehaviour
     {
         if (unit is PlayerUnit)
         {
-            m_CurrentGameState = new PlayerUnitTurnGameState(unit);
+            PushState(new PlayerUnitTurnGameState(unit));
         }
         else if (unit is EnemyUnit)
         {
-            m_CurrentGameState = new EnemyUnitTurnGameState(unit);
+            PushState(new EnemyUnitTurnGameState(unit));
         }
+    }
+
+    private void PushState(IGameState state)
+    {
+        m_CurrentGameState?.OnExit();
+
+        m_CurrentGameState = state;
+
+        m_CurrentGameState.OnEnter();
     }
 }
