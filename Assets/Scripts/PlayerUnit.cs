@@ -10,6 +10,8 @@ public class PlayerUnit : UnitBase
     public override void StartTurn()
     {
         base.StartTurn();
-        GridSystem.s_Instance.a_MoveAction?.Invoke(new MoveActionArgs { m_Unit = this, m_HighlightOnlyValidMoves = true});
+        
+        Vector2Int startCell = new Vector2Int((int)transform.position.x, (int)transform.position.z);
+        GridSystem.s_Instance.MarkCellsInRange(GridSystem.s_Instance.FindCellsInRange(startCell, (int)m_RemainingMovementRange));
     }
 }

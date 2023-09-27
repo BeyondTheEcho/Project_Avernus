@@ -36,6 +36,10 @@ public class PlayerUnitTurnGameState : IGameState
             {
                 GridSystem.s_Instance.a_GridCellHovered?.Invoke(new GridSystem.GridCellHoveredArgs { m_HoveredGridCell = gridCell });
 
+                Vector2Int startCell = new Vector2Int((int)m_CurrentUnit.transform.position.x, (int)m_CurrentUnit.transform.position.z);
+                var path = GridSystem.s_Instance.FindPath(startCell, gridCell.GetGridPosition());
+                GridSystem.s_Instance.HighlightPath(path);
+
                 if (Input.GetMouseButtonDown(MouseButtons.c_LeftMouseButton))
                 {
                     m_CurrentUnit.MoveTo(gridCell);

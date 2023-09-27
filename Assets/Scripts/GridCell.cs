@@ -12,14 +12,15 @@ public class GridCell : MonoBehaviour
     [SerializeField] private MeshRenderer m_MeshRenderer;
 
     private Vector2Int m_GridPosition;
-    private PlayerUnit m_OccupyingPlayerUnit;
+    private UnitBase m_OccupyingUnit;
+    private BoxCollider m_BoxCollider;
 
     // Start is called before the first frame update
     void Awake()
     {
+        m_BoxCollider = GetComponent<BoxCollider>();
         GridSystem.s_Instance.a_GridCellHovered += OnHovered;
         GridSystem.s_Instance.a_GridCellOccupied += OnOccupied;
-        GridSystem.s_Instance.a_MoveAction += OnMoveAction;
     }
 
     // Update is called once per frame
@@ -33,33 +34,26 @@ public class GridCell : MonoBehaviour
         m_GridPosition = gridPosition;
     }
 
-    public void SetOccupyingUnit(PlayerUnit playerUnit)
+    public void SetOccupyingUnit(UnitBase unit)
     {
-        m_OccupyingPlayerUnit = playerUnit;
+        m_OccupyingUnit = unit;
         m_MeshRenderer.material = m_OccupiedMaterial;
     }
 
     public void ClearOccupyingUnit()
     {
-        m_OccupyingPlayerUnit = null;
+        m_OccupyingUnit = null;
         m_MeshRenderer.material = m_DefaultMaterial;
     }
 
-    public void OnMoveAction(GridSystem.MoveActionArgs args)
+    public Vector2Int GetGridPosition()
     {
-        if (args.m_HighlightOnlyValidMoves && GridSystem.Get2DDistanceAsFloat(transform.position, args.m_Unit.transform.position) > args.m_Unit.GetRemainingMovementRange())
-        {
-            m_MeshRenderer.enabled = false;
-        }
-        else
-        {
-            m_MeshRenderer.enabled = true;
-        }
+        return m_GridPosition;
     }
 
     public void OnHovered(GridSystem.GridCellHoveredArgs args)
     {
-        if (m_OccupyingPlayerUnit != null) return;
+        if (m_OccupyingUnit != null) return;
 
         if (args.m_HoveredGridCell == this)
         {
@@ -76,12 +70,37 @@ public class GridCell : MonoBehaviour
         if (args.m_OccupiedGridCell == this)
         {
             m_MeshRenderer.material = m_OccupiedMaterial;
-            m_OccupyingPlayerUnit = args.m_OccupyingPlayerUnit;
+            m_OccupyingUnit = args.m_OccupyingPlayerUnit;
         }
-        else if (args.m_OccupyingPlayerUnit == m_OccupyingPlayerUnit)
+        else if (args.m_OccupyingPlayerUnit == m_OccupyingUnit)
         {
             m_MeshRenderer.material = m_DefaultMaterial;
-            m_OccupyingPlayerUnit = null;
+            m_OccupyingUnit = null;
         }
+    }
+
+    public void Highlight()
+    {
+        m_BoxCollider.enabled = true;
+        m_MeshRenderer.enabled = true;
+        m_MeshRenderer.material = m_HoveredMaterial;
+    }
+
+    public void MarkInRange()
+    {
+        m_BoxCollider.enabled = true;
+        m_MeshRenderer.enabled = true;
+        m_MeshRenderer.material = m_DefaultMaterial;
+    }
+
+    public void HideCell()
+    {
+        m_BoxCollider.enabled = false;
+        m_MeshRenderer.enabled = false;
+    }
+
+    public bool IsOccupied()
+    {
+        return m_OccupyingUnit != null;
     }
 }

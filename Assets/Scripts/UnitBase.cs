@@ -10,11 +10,11 @@ public class UnitBase : MonoBehaviour
 {
     [SerializeField] private GameObject m_SelectedIndicator;
 
-    private float m_Health = 100f;
-    private float m_AttackDamage = 5f;
-    private float m_AttackRange = 1f;
-    private float m_MovementRange = 4f;
-    private float m_RemainingMovementRange = 0f;
+    protected float m_Health = 100f;
+    protected float m_AttackDamage = 5f;
+    protected float m_AttackRange = 1f;
+    protected float m_MovementRange = 4;
+    protected float m_RemainingMovementRange = 0;
 
     private bool m_IsMoving = false;
 
@@ -23,6 +23,11 @@ public class UnitBase : MonoBehaviour
     private void Awake()
     {
         m_NavMeshAgent = GetComponent<NavMeshAgent>();
+    }
+
+    private void Start()
+    {
+        GridSystem.s_Instance.GetCellAtPos(transform.position).SetOccupyingUnit(this);
     }
 
     public void SetSelected()
@@ -35,20 +40,28 @@ public class UnitBase : MonoBehaviour
         m_SelectedIndicator.SetActive(false);
     }
 
+    public bool IsGridCellInRange(GridCell cell)
+    {
+        float destinationDistance = GridSystem.Get2DDistanceAsFloat(transform.position, cell.transform.position);
+
+        return destinationDistance <= m_RemainingMovementRange;
+    }
+
     public void MoveTo(GridCell destination)
     {
         if (m_IsMoving) return;
+        if (!IsGridCellInRange(destination)) return;
 
         float destinationDistance = GridSystem.Get2DDistanceAsFloat(transform.position, destination.transform.position);
-
-        if (destinationDistance > m_RemainingMovementRange) return;
 
         StartCoroutine(MoveToCoroutine(destination.transform.position, () =>
         {
             GridSystem.s_Instance.a_GridCellOccupied?.Invoke(new GridCellOccupiedArgs { m_OccupiedGridCell = destination, m_OccupyingPlayerUnit = this as PlayerUnit });
             m_IsMoving = false;
-            m_RemainingMovementRange -= destinationDistance;
-            GridSystem.s_Instance.a_MoveAction?.Invoke(new MoveActionArgs { m_Unit = this, m_HighlightOnlyValidMoves = true });
+            m_RemainingMovementRange -= (int)destinationDistance;
+
+            Vector2Int startCell = new Vector2Int((int)transform.position.x, (int)transform.position.z);
+            GridSystem.s_Instance.MarkCellsInRange(GridSystem.s_Instance.FindCellsInRange(startCell, (int)m_RemainingMovementRange));
         }));
     }
 
