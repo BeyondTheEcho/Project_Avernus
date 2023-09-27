@@ -12,6 +12,6 @@ public class PlayerUnit : UnitBase
         base.StartTurn();
         
         Vector2Int startCell = new Vector2Int((int)transform.position.x, (int)transform.position.z);
-        GridSystem.s_Instance.MarkCellsInRange(GridSystem.s_Instance.FindCellsInRange(startCell, (int)m_RemainingMovementRange));
+        GridSystem.s_Instance.MarkCellsInRange(GridSystem.s_Instance.FindCellsInRange(startCell, m_Mover.m_RemainingMovementRange));
     }
 }

@@ -42,7 +42,7 @@ public class PlayerUnitTurnGameState : IGameState
 
                 if (Input.GetMouseButtonDown(MouseButtons.c_LeftMouseButton))
                 {
-                    m_CurrentUnit.MoveTo(gridCell);
+                    m_CurrentUnit.MoveTo(path);
                 }
             }
         }
